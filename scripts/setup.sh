@@ -1,11 +1,6 @@
 #!/bin/env sh
 
 root_dir="$(git rev-parse --show-toplevel 2>/dev/null)";
-if [ -z "${root_dir}" ]; then
-    echo 'could not determine root directory' >&2;
-    exit 2;
-fi
-
 if [ ! -d "${root_dir}/wallpapers" ]; then
     echo "not a valid directory: '${root_dir}/wallpapers'" >&2;
     exit 3;
@@ -18,7 +13,9 @@ if [ ! -d "${HOME}/.config/systemd/user" ]; then
 fi
 
 while true; do
-    read -p 'timeout (in seconds): ' interval;
+    printf 'timeout (in seconds): ';
+    read -r interval;
+
     if ! echo "${interval}" | grep -qE '^[0-9]+$'; then
         echo "not a number: ${interval}" >&2;
     elif [ "${interval}" -lt 30 ]; then
@@ -28,7 +25,9 @@ while true; do
     fi
 done;
 
-random_flag="$(read -p 'display images randomly? [y/n]: ' answer; echo "${answer}" | grep -iq '^y' && echo '-r ')";
+printf 'display images randomly? [y/n]: ';
+random_flag="$(read -r answer && echo "${answer}" | grep -iq '^y' && echo '-r ')";
+
 cat > "${HOME}/.config/systemd/user/wallpaper-rotator.service" <<END_OF_FILE
 [Unit]
 Description=Wallpaper rotator
