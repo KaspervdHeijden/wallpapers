@@ -1,15 +1,20 @@
 #!/bin/env sh
 
+if [ "$(id -u)" -eq 0 ]; then
+    echo 'do not run as root' >&2;
+    return 3;
+fi
+
 root_dir="$(git rev-parse --show-toplevel 2>/dev/null)";
 if [ ! -d "${root_dir}/wallpapers" ]; then
     echo "not a valid directory: '${root_dir}/wallpapers'" >&2;
-    exit 3;
+    exit 4;
 fi
 
 mkdir -p "${HOME}/.config/systemd/user";
 if [ ! -d "${HOME}/.config/systemd/user" ]; then
     echo "could not create '${HOME}/.config/systemd/user'" >&2;
-    exit 4;
+    exit 5;
 fi
 
 while true; do
